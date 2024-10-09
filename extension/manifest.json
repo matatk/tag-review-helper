@@ -1,0 +1,36 @@
+{
+  "author": "Matthew Tylee Atkinson",
+  "background": {
+    "scripts": [
+      "background.js"
+    ],
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "css": [
+        "content.css"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "matches": [
+        "https://github.com/*"
+      ],
+      "run_at": "document_start"
+    }
+  ],
+  "description": "Quality-of-life GitHub Web UI tweaks for W3C TAG members working on design reviews",
+  "homepage_url": "https://github.com/matatk/tag-review-helper/",
+  "host_permissions": [
+    "https://github.com/*"
+  ],
+  "manifest_version": 3,
+  "name": "TAG Review Helper",
+  "permissions": [
+    "scripting",
+    "webNavigation"
+  ],
+  "short_name": "TAG Review Helper",
+  "version": "0.0.0"
+}
