@@ -1,4 +1,4 @@
-#tag-review-helper {
+#tag-review-helper > :last-child {
 	margin-block-end: 1em;
 }
 
@@ -9,6 +9,21 @@
 #tag-review-helper details {
 	border: 1px dotted currentColor;
 	margin-block-end: 0.5em;
+}
+
+#tag-review-helper details > div {
+	margin: 0.5em;
+}
+
+#tag-review-helper details > div blockquote {
+	padding-inline: 0.75em;
+	border-inline: 0.15em solid currentColor;
+}
+
+/* Counteract GitHub styling */
+#tag-review-helper details > div ol,
+#tag-review-helper details > div ul {
+	padding-inline-start: 2em;
 }
 
 #tag-review-helper summary {

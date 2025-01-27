@@ -17,7 +17,7 @@
       "matches": [
         "https://github.com/*"
       ],
-      "run_at": "document_start"
+      "run_at": "document_idle"
     }
   ],
   "description": "Quality-of-life GitHub Web UI tweaks for W3C TAG members working on design reviews",
@@ -27,10 +27,12 @@
   ],
   "manifest_version": 3,
   "name": "TAG Review Helper",
+  "options_page": "set-up.html",
   "permissions": [
     "scripting",
+    "storage",
     "webNavigation"
   ],
   "short_name": "TAG Review Helper",
-  "version": "0.0.0"
+  "version": "0.1.0"
 }

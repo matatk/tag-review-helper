@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="color-scheme" content="dark light">
+	<title>TAG Review Helper Set-up</title>
+	<style>
+		:root {
+			font-size: 1.5em;
+			font-family: sans-serif;
+			line-height: 1.5;
+		}
+
+		body {
+			max-width: 95%;
+			width: 60rem;
+			margin: auto;
+		}
+
+		p.important {
+			border: 1px solid currentColor;
+			padding: 0.5em;
+		}
+
+		input,
+		button {
+			font-size: inherit;
+		}
+	</style>
+</head>
+
+<body>
+	<h1>TAG Review Helper Set-up</h1>
+	<p>In order to use this extension, you need to provide a GitHub API Personal Access Token. This allows the extension to query for internal review comments that relate to a particular design review.</p>
+	<p class="important"><strong>Important note:</strong> It's best practice to ensure that your token imparts read-only access to issues in the internal review comments repository only. Due to browser extension API limitations, the token will be stored in plain text on your local filesystem by this extension (though it is not exposed to web sites, nor other extensions, it could be leaked if your browser or system is compromised). Giving the token only the needed access helps mitigate against the risks this poses&mdash;though if you are not comfortable with the risk, you should not use this extension.</p>
+
+	<h2>Creating a minimal token</h2>
+	<p>Here's a step-by-step guide to creating a token with only the required access.</p>
+	<ol>
+		<li>
+			<p>Visit <a href="https://github.com/settings/personal-access-tokens/new">https://github.com/settings/personal-access-tokens/new</a>&mdash;you will need to sign in to GitHub.</p>
+		</li>
+		<li>
+			<p>Enter a name for your token&mdash;this is just for your own reference.</p>
+		</li>
+		<li>
+			<p>Under &quot;Resource owner&quot; choose &quot;w3ctag&quot;.</p>
+		</li>
+		<li>
+			<p>Under &quot;Expiration&quot; choose a value such as 30, 60, or 90 days. It's strongly recommended that any tokens you create expire in a reasonable time-frame, such as a few months.</p>
+		</li>
+		<li>
+			<p>Under &quot;Repository access&quot; choose &quot;Only select repositories&quot; and select the &quot;w3ctag/design-reviews-private-brainstorming&quot; repository.</p>
+		</li>
+		<li>
+			<p>Verify that under &quot;Overview&quot; the first summary says &quot;2 permissions for 1 of your repositories&quot; and the permissions are:</p>
+			<ul>
+				<li>
+					<p>Issues: Read-only</p>
+				</li>
+				<li>
+					<p>Metadata: Read-only</p>
+				</li>
+			</ul>
+		</li>
+		<li>
+			<p>Verify that the second summary says &quot;0 Account permissions&quot;</p>
+		</li>
+		<li>
+			<p>Verify the expiry date.</p>
+		</li>
+		<li>
+			<p>Activate the &quot;Generate token&quot; button.</p>
+		</li>
+		<li>
+			<p>Copy the token to the clipboard, paste it into the box below, and use the &quot;Save&quot; button.</p>
+		</li>
+	</ol>
+
+	<h2>Your Personal Access Token</h2>
+	<p>Please input, or update, your token here.</p>
+	<p>
+		<input id="token" type="text" size="42"> <button id="save">Save</button> <output id="result"></output>
+	</p>
+
+	<script src="set-up.js"></script>
+</body>
+
+</html>
