@@ -122,7 +122,7 @@ function getCommentsFor(internalIssueURL) {
 				WARNINGS.remove()
 				AGAIN.remove()
 				OUTPUT.hidden = false
-				foundComments = true
+				foundComments = true  // FIXME: this becomes incorrect after a navigation via history state.
 			})
 			.catch(error => {
 				console.error(error)
