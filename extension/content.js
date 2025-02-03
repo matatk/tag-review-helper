@@ -1,5 +1,3 @@
-// FIXME:
-//   - If we go to the internal thread, then use the back button, the found comments disappear.
 // TODO:
 //   - GitHub has a lot of History updates; would be good to be able to filter these further.
 
@@ -10,14 +8,14 @@ const WARNINGS = document.createElement('div')
 const AGAIN = document.createElement('div')
 
 let placedElements = false
-let foundComments = false
+let fetchingData = false
 
 
 //
 // Support functions
 //
 
-function placeGlobalElements() {
+function createAndPlaceElements() {
 	CONTAINER.id = 'tag-review-helper'  // for the CSS
 
 	OUTPUT.hidden = true
@@ -31,6 +29,11 @@ function placeGlobalElements() {
 
 	CONTAINER.append(WARNINGS, OUTPUT, AGAIN)
 
+	placeContainer()
+	placedElements = true
+}
+
+function placeContainer() {
 	const targ = document.querySelector('[data-testid="issue-viewer-issue-container"]')
 	if (!targ) {
 		document.body.prepend(CONTAINER)
@@ -41,8 +44,6 @@ function placeGlobalElements() {
 	} else {
 		targ.prepend(CONTAINER)
 	}
-
-	placedElements = true
 }
 
 function warn(...messages) {
@@ -80,6 +81,7 @@ function getCommentsFor(internalIssueURL) {
 	const queryUrl = `https://api.github.com/repos/w3ctag/design-reviews-private-brainstorming/issues/${issueNumber}/comments`
 	console.debug('Fetching', queryUrl, '- current location:', window.location.href)
 
+	fetchingData = true
 	chrome.storage.local.get('token', items => {
 		fetch(queryUrl, {
 			headers: {
@@ -92,8 +94,11 @@ function getCommentsFor(internalIssueURL) {
 			})
 			.then(comments => {
 				if (!Array.isArray(comments)) {
+					const details = comments.message
+						? `The error message is: '${comments.message}'`
+						: 'The error message isn\'t known.'
 					console.error('Something unexpected with the returned data, which is:', comments)
-					warn('Something went wrong in fetching/processing the internal comments. The returned data has been logged to the console.')
+					warn(`Something went wrong in fetching/processing the internal comments. The returned data has been logged to the console. ${details}`)
 					return
 				}
 
@@ -122,7 +127,6 @@ function getCommentsFor(internalIssueURL) {
 				WARNINGS.remove()
 				AGAIN.remove()
 				OUTPUT.hidden = false
-				foundComments = true  // FIXME: this becomes incorrect after a navigation via history state.
 			})
 			.catch(error => {
 				console.error(error)
@@ -144,7 +148,6 @@ function findAndGetComments() {
 
 	if (internalIssueAnchor && internalIssueAnchor.href) {
 		console.debug('Creating UI and fetching comments. Current location:', window.location.href)
-
 		// NOTE: If navigating to the internal thread, then using the Back button, the page is not fully reloaded, and the first anchor found is the timestamp in the internal thread, which has a fragment - so this must be removed.
 		getCommentsFor(internalIssueAnchor.href.split('#')[0])
 	} else {
@@ -163,17 +166,20 @@ console.debug(`Starting ${TRH_NAME} on`, window.location.href)
 
 chrome.runtime.onMessage.addListener(message => {
 	if (message.name === 'issue-comments') {
-		if (!placedElements) placeGlobalElements()
-
-		// FIXME: We can return to the previous page via the Back button without a reload in some cases, but in rendering the previous page, GitHub removes the found comments.
-		if (foundComments) {
-			console.debug('Ignoring duplicate request to find comments.')
-			return
-		}
-
-		// NOTE: Sometimes we get history requests for different URLs in quick succession.
-		// TODO: Check the above is true.
+		// TODO: Check if this is ever not the case
 		if (message.for === window.location.href.split('#')[0]) {
+			if (!placedElements) createAndPlaceElements()
+
+			if (OUTPUT.isConnected === false) {
+				placeContainer()
+				console.log('placed', CONTAINER)
+			}
+
+			if (OUTPUT.hidden === false) {
+				console.debug('Ignoring duplicate request to find comments.')
+				return
+			}
+
 			console.debug('Received request to find comments. Current location:', window.location.href)
 			findAndGetComments()
 		}

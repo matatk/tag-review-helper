@@ -13,6 +13,7 @@ function handleHistory(details) {
 	if (details.frameId > 0) return
 	const urlWithoutHash = details.url.split('#')[0]
 	if (reIssue.test(urlWithoutHash)) {
+		console.log('handling this history event', details)
 		chrome.tabs.sendMessage(details.tabId, { name: 'issue-comments', for: urlWithoutHash })
 			.catch(error => console.warn(error))
 	}
